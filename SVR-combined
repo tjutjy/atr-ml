@@ -1,0 +1,120 @@
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn import svm
+import sys
+import csv
+#===================================================
+#reading all pattern to pattern variable
+#===================================================
+pattern=list()
+fhd=csv.reader(open('pattern.csv','r'))
+for line in fhd:
+    pattern.append(line)
+
+#===================================================
+#reading classification label to label_c
+#===================================================
+label_c=list()
+fhl=csv.reader(open('label_c.csv','r'))
+for line in fhl:
+    label_c.append(line)
+label_c=np.array(label_c,dtype='float64')
+label_c=label_c.tolist()
+
+#===================================================
+#reading regression label to label_r
+#===================================================
+label_r=list()
+fhl=csv.reader(open('label_r.csv','r'))
+for line in fhl:
+    label_r.append(line)
+label_r=np.array(label_r,dtype='float64')
+label_r=label_r.tolist()
+
+#===================================================
+#reading classification pattern to pattern_c
+#===================================================
+pattern_c=pattern
+
+#===================================================
+#reading regression pattern to pattern_r
+#===================================================
+pattern_r=list()
+for i in range(0,104):
+    pattern_r.append(pattern[i])
+
+#===================================================
+#test set preparaton
+#===================================================
+raw_test=list()
+i=1
+for line in pattern:
+    if i==4:
+        raw_test.append(line)
+        i=1
+    else:
+        i=i+1
+
+#===================================================
+#classification training set preparaton
+#===================================================
+raw_train_c=list()
+label_train_c=list()
+i,j=1,1
+for line in pattern_c:
+    if i==4:
+        i=1
+    else:
+        raw_train_c.append(line)
+        i=i+1
+for line in label_c:
+    if j==4:
+        j=1
+    else:
+        label_train_c.append(line)
+        j=j+1
+
+#===================================================
+#regression training set preparaton
+#===================================================
+raw_train_r=list()
+label_train_r=list()
+i,j=1,1
+for line in pattern_r:
+    if i==4:
+        i=1
+    else:
+        raw_train_r.append(line)
+        i=i+1
+for line in label_r:
+    if j==4:
+        j=1
+    else:
+        label_train_r.append(line)
+        j=j+1
+
+#===================================================
+#training classification model as clf
+#===================================================
+clf=svm.SVC(kernel='linear')
+clf.fit(raw_train_c,label_train_c)
+label_predict_c=clf.predict(raw_test)
+label_predict_c=label_predict_c.tolist()
+
+#===================================================
+#training regression model as reg
+#===================================================
+reg=svm.SVR(kernel='linear')
+reg.fit(raw_train_r,label_train_r)
+label_predict_r=reg.predict(raw_test)
+label_predict_r=label_predict_r.tolist()
+
+#===================================================
+#get the final predict result and save it to label_predict.csv
+#===================================================
+label_predict=np.multiply(np.array(label_predict_c),np.array(label_predict_r))
+label_predict=label_predict.tolist()
+output=csv.writer(open('label_predict.csv','a',newline=''),dialect='excel')
+output.writerows(map(lambda x:[x],label_predict))
+output=csv.writer(open('label_predict_c.csv','a',newline=''),dialect='excel')
+output.writerows(map(lambda x:[x],label_predict_c))
