@@ -1,5 +1,5 @@
 # atr-ml
-This project combines ATR-FTIR technique and some basic machine learning algorithms to achieve quick and indirect characterization of biomass wastes. The code might seem confusing if the reader has not read the relevant paper. The link of relevant paper would be mentioned after the paper is accepted. Currentlt this project just works as a intermediate for the code.
+This project combines ATR-FTIR technique and some basic machine learning algorithms to achieve quick and indirect characterization of biomass wastes. Paper URL: https://doi.org/10.1016/j.jhazmat.2019.121723
 
 List of contents:
   SVR-single      using just SVR algorithm to achieve indirect characterization
